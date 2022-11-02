@@ -1,4 +1,5 @@
 ﻿using Exiled.API.Features;
+using Exiled.CreditTags.Features;
 using Exiled.Events.EventArgs;
 using MEC;
 
@@ -6,14 +7,15 @@ namespace WeHate079.Events
 {
     public class Scp079Handler
     {
-        private readonly MainClass _plugin;
         private int time;
+        private System.Random rnd;
+        private bool is106Contained;
         public void OnSpawn(SpawnedEventArgs ev)
         {
-            time = _plugin.Config.TimeToReact;
+            time = MainClass.Instance.Config.TimeToReact;
             if (ev.Player.Role != RoleType.Scp079)
                 return;
-            string message = "Не нравиться 079? Замените его на любой дцп кроме зомби и ";
+            string message = "Не нравиться 079? Замени его!\n";
             var scps = MainClass.GetAvailableScps();
             foreach (var item in scps)
             {
@@ -42,10 +44,34 @@ namespace WeHate079.Events
                         break;
                 }
             }
-            message += $"\nКомандой .swapTo <scp-num>(049, 939-53, 939-89). У вас {time} секунд :)";
+            message += $"Командой .swapTo <scp-num>(049, 939-53, 939-89).\nУ вас {time} секунд :)";
             ev.Player.Broadcast(new Exiled.API.Features.Broadcast(message, duration: 10));
             MainClass.SwapId = ev.Player.UserId;
             Timing.CallDelayed(time, () => MainClass.SwapId = "");
+        }
+        public void OnDying(DyingEventArgs ev)
+        {
+            if(ev.Target.Role == RoleType.Scp079)
+            {   
+                if (ev.Handler.Type == Exiled.API.Enums.DamageType.Recontainment)
+                {
+                    ev.IsAllowed = false;
+                    rnd = new System.Random();
+                    var zis = new RoleType[] { RoleType.Scp106, RoleType.Scp93953, RoleType.Scp93989};
+                    RoleType chosen = zis[rnd.Next(0, zis.Length-1)];
+                    if(chosen == RoleType.Scp106 && is106Contained) chosen = RoleType.Scp93989;
+                    Log.Info("Нарандомило: " + chosen.ToString());
+                    ev.Target.SetRole(chosen);
+                }
+            }
+        }
+        public void OnScp106Contain(ContainingEventArgs ev)
+        {
+            is106Contained = true;
+        }
+        public void OnRoundStart()
+        {
+            is106Contained = false;
         }
     }
 }

@@ -6,6 +6,8 @@ using System.Collections.Immutable;
 namespace WeHate079
 {
     using Player = Exiled.Events.Handlers.Player;
+    using Scp106 = Exiled.Events.Handlers.Scp106;
+    using Server = Exiled.Events.Handlers.Server;
     using API = Exiled.API.Features;
     public class MainClass : Plugin<Config>
     {
@@ -19,13 +21,18 @@ namespace WeHate079
         {
             EventHandler = new Scp079Handler();
             Player.Spawned += EventHandler.OnSpawn;
+            Player.Dying += EventHandler.OnDying;
+            Server.RoundStarted += EventHandler.OnRoundStart;
+            Scp106.Containing += EventHandler.OnScp106Contain;
             SwapId = "";
             base.OnEnabled();
         }
-
         public override void OnDisabled()
         {
             Player.Spawned -= EventHandler.OnSpawn;
+            Player.Dying -= EventHandler.OnDying;
+            Server.RoundStarted -= EventHandler.OnRoundStart;
+            Scp106.Containing -= EventHandler.OnScp106Contain;
             EventHandler = null;
             SwapId = null;
             base.OnDisabled();

@@ -51,6 +51,9 @@
                 case "939-89":
                     targetRole = RoleType.Scp93989;
                     break;
+                case "049-2":
+                    response = "чел ну не зомби же, а";
+                    return true;
                 case "079":
                     response = "иди нахуй";
                     return true;
