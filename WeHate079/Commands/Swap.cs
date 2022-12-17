@@ -3,6 +3,8 @@
     using System;
     using CommandSystem;
     using Exiled.API.Features;
+    using Exiled.API.Features.Roles;
+    using PlayerRoles;
 
     [CommandHandler(typeof(ClientCommandHandler))]
     public class Swap : ICommand
@@ -25,7 +27,7 @@
             }
             
             Player plr = Player.Get(sender);
-            RoleType targetRole = RoleType.None;
+            RoleTypeId targetRole = RoleTypeId.None;
             if (plr.UserId != MainClass.SwapId)
             {
                 response = "Вы не имеете права.";
@@ -34,22 +36,22 @@
             switch (arguments.At(0))
             {
                 case "049":
-                    targetRole = RoleType.Scp049;
+                    targetRole = RoleTypeId.Scp049;
                     break;
                 case "096":
-                    targetRole = RoleType.Scp096;
+                    targetRole = RoleTypeId.Scp096;
                     break;
                 case "106":
-                    targetRole = RoleType.Scp106;
+                    targetRole = RoleTypeId.Scp106;
                     break;
                 case "173":
-                    targetRole = RoleType.Scp173;
+                    targetRole = RoleTypeId.Scp173;
                     break;
                 case "939-53":
-                    targetRole = RoleType.Scp93953;
+                    targetRole = RoleTypeId.Scp939;
                     break;
                 case "939-89":
-                    targetRole = RoleType.Scp93989;
+                    targetRole = RoleTypeId.Scp939;
                     break;
                 case "049-2":
                     response = "чел ну не зомби же, а";
@@ -58,7 +60,7 @@
                     response = "иди нахуй";
                     return true;
             }
-            if(targetRole == RoleType.None)
+            if(targetRole == RoleTypeId.None)
             {
                 response = "Неизвестный сцп "+ arguments.At(0);
                 return true;
